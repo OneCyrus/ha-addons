@@ -1,5 +1,5 @@
 ARG BUILD_FROM
-FROM victoriametrics/victoria-metrics:v1.72.0
+FROM $BUILD_FROM
 
 ENV LANG C.UTF-8
 
