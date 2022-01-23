@@ -1,8 +1,8 @@
 {
   "name": "Squid",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "slug": "squid",
-  "description": "Squid forward proxy server",
+  "description": "Squid forward proxy",
   "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
   "startup": "application",
   "boot": "auto",
