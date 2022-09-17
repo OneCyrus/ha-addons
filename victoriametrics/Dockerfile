@@ -1,4 +1,4 @@
-ARG BUILD_FROM
+ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base/amd64:6.0.0
 FROM $BUILD_FROM
 
 ENV LANG C.UTF-8
