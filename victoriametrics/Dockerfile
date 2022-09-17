@@ -8,5 +8,5 @@ COPY victoria-metrics-prod_arm64_1-81-2 /tmp/victoria-metrics-prod
 COPY prometheus.yml /
 RUN chmod a+x /tmp/victoria-metrics-prod
 
-CMD [ "/victoria-metrics-prod", "-storageDataPath", "/data" ] 
+CMD [ "/tmp/victoria-metrics-prod", "-storageDataPath", "/data" ] 
 # , "-promscrape.config", "/prometheus.yml"]
