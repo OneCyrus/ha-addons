@@ -5,8 +5,7 @@ FROM $BUILD_FROM
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Setup base
-ARG GARAGE_VERSION="1.1.0"
-ARG TARGETARCH
+ENV GARAGE_VERSION="1.1.0"
 
 # Install required packages
 RUN apk add --no-cache \
@@ -17,15 +16,16 @@ RUN apk add --no-cache \
     ca-certificates
 
 # Download and install Garage
-RUN if [ "${TARGETARCH}" = "amd64" ]; then \
+RUN echo "Building for architecture: ${BUILD_ARCH}" \
+    && if [ "${BUILD_ARCH}" = "amd64" ]; then \
         DOWNLOAD_URL="https://garagehq.deuxfleurs.fr/_releases/v${GARAGE_VERSION}/x86_64-unknown-linux-musl/garage"; \
-    elif [ "${TARGETARCH}" = "aarch64" ]; then \
+    elif [ "${BUILD_ARCH}" = "aarch64" ]; then \
         DOWNLOAD_URL="https://garagehq.deuxfleurs.fr/_releases/v${GARAGE_VERSION}/aarch64-unknown-linux-musl/garage"; \
-    elif [ "${TARGETARCH}" = "armv7" ]; then \
+    elif [ "${BUILD_ARCH}" = "armv7" ]; then \
         DOWNLOAD_URL="https://garagehq.deuxfleurs.fr/_releases/v${GARAGE_VERSION}/armv6l-unknown-linux-musleabihf/garage"; \
-    elif [ "${TARGETARCH}" = "armhf" ]; then \
+    elif [ "${BUILD_ARCH}" = "armhf" ]; then \
         DOWNLOAD_URL="https://garagehq.deuxfleurs.fr/_releases/v${GARAGE_VERSION}/armv6l-unknown-linux-musleabihf/garage"; \
-    elif [ "${TARGETARCH}" = "386" ]; then \
+    elif [ "${BUILD_ARCH}" = "i386" ]; then \
         DOWNLOAD_URL="https://garagehq.deuxfleurs.fr/_releases/v${GARAGE_VERSION}/i686-unknown-linux-musl/garage"; \
     else \
         DOWNLOAD_URL="https://garagehq.deuxfleurs.fr/_releases/v${GARAGE_VERSION}/x86_64-unknown-linux-musl/garage"; \
@@ -36,6 +36,8 @@ RUN if [ "${TARGETARCH}" = "amd64" ]; then \
 
 # Copy data
 COPY run.sh /
+COPY icon.svg /
+COPY logo.svg /
 RUN chmod a+x /run.sh
 
 # Labels
