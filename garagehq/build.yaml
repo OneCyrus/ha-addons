@@ -1,0 +1,13 @@
+build_from:
+  aarch64: "ghcr.io/home-assistant/aarch64-base:3.18"
+  amd64: "ghcr.io/home-assistant/amd64-base:3.18"
+  armhf: "ghcr.io/home-assistant/armhf-base:3.18"
+  armv7: "ghcr.io/home-assistant/armv7-base:3.18"
+  i386: "ghcr.io/home-assistant/i386-base:3.18"
+labels:
+  org.opencontainers.image.title: "Home Assistant Add-on: GarageHQ S3 Server"
+  org.opencontainers.image.description: "S3-compatible storage server for Home Assistant"
+  org.opencontainers.image.source: "https://github.com/home-assistant/addons/tree/master/garagehq"
+  org.opencontainers.image.licenses: "Apache-2.0"
+args:
+  GARAGE_VERSION: "1.1.0"
