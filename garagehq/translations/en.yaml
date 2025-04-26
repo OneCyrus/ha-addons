@@ -1,0 +1,13 @@
+configuration:
+  storage_path:
+    name: Storage Path
+    description: Path where GarageHQ will store its data. Default is /share/garagehq
+  access_key:
+    name: Access Key
+    description: S3 access key for authentication (like AWS access key)
+  secret_key:
+    name: Secret Key
+    description: S3 secret key for authentication (like AWS secret key)
+  region:
+    name: Region
+    description: S3 region name (default is us-east-1)

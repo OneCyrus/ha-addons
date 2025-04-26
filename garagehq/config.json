@@ -1,0 +1,30 @@
+{
+  "name": "GarageHQ S3 Server",
+  "version": "1.0.0",
+  "slug": "garagehq",
+  "description": "S3-compatible storage server for Home Assistant",
+  "url": "https://github.com/dagut/ha-addons/tree/main/garagehq",
+  "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
+  "startup": "services",
+  "boot": "auto",
+  "ports": {
+    "9000/tcp": 9000
+  },
+  "ports_description": {
+    "9000/tcp": "S3 API port"
+  },
+  "map": ["share:rw"],
+  "options": {
+    "storage_path": "/share/garagehq",
+    "access_key": "",
+    "secret_key": "",
+    "region": "us-east-1"
+  },
+  "schema": {
+    "storage_path": "str",
+    "access_key": "str",
+    "secret_key": "str",
+    "region": "str"
+  },
+  "init": false
+}
