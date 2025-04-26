@@ -15,10 +15,11 @@ Features:
 - Simple authentication with access/secret keys
 - Persistent storage using Home Assistant's share folder
 - Optional web interface for static website hosting
+- Automatic metadata snapshots for data integrity
 
 [Find the full documentation here.](DOCS.md)
 
-[release-shield]: https://img.shields.io/badge/version-v1.0.0-blue.svg
+[release-shield]: https://img.shields.io/badge/version-v1.0.1-blue.svg
 [release]: https://github.com/home-assistant/addons/tree/master/garagehq
 [project-stage-shield]: https://img.shields.io/badge/project%20stage-production%20ready-brightgreen.svg
 [maintenance-shield]: https://img.shields.io/maintenance/yes/2025.svg
