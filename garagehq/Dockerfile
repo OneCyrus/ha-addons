@@ -36,7 +36,6 @@ RUN echo "Building for architecture: ${BUILD_ARCH}" \
 
 # Copy data
 COPY run.sh /
-COPY icon.svg /
 RUN chmod a+x /run.sh
 
 # Labels
