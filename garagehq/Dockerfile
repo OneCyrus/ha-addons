@@ -1,19 +1,11 @@
-ARG BUILD_FROM
-FROM $BUILD_FROM
+ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base:7.7.0
+FROM ${BUILD_FROM}
 
 # Set shell
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Setup base
 ENV GARAGE_VERSION="1.1.0"
-
-# Install required packages
-RUN apk add --no-cache \
-    bash \
-    curl \
-    jq \
-    tzdata \
-    ca-certificates
 
 # Download and install Garage
 RUN echo "Building for architecture: ${BUILD_ARCH}" \
@@ -34,9 +26,8 @@ RUN echo "Building for architecture: ${BUILD_ARCH}" \
     && curl -L -s "${DOWNLOAD_URL}" -o /usr/local/bin/garage \
     && chmod +x /usr/local/bin/garage
 
-# Copy data
-COPY run.sh /
-RUN chmod a+x /run.sh
+# Copy root filesystem
+COPY rootfs /
 
 # Labels
 LABEL \
@@ -47,4 +38,4 @@ LABEL \
     io.hass.arch="${BUILD_ARCH}" \
     maintainer="Home Assistant Community Add-ons"
 
-ENTRYPOINT ["/run.sh"]
+# ENTRYPOINT ["/run.sh"]

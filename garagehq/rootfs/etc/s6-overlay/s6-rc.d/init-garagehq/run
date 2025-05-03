@@ -1,4 +1,7 @@
 #!/usr/bin/with-contenv bashio
+# ==============================================================================
+# Initialize GarageHQ configuration
+# ==============================================================================
 
 # Get config values
 STORAGE_PATH=$(bashio::config 'storage_path')
@@ -17,7 +20,7 @@ mkdir -p "${STORAGE_PATH}/data"
 mkdir -p "${STORAGE_PATH}/snapshots"
 
 # Set up configuration file
-CONFIG_DIR="/config"
+CONFIG_DIR="/etc/garage"
 CONFIG_FILE="${CONFIG_DIR}/garage.toml"
 
 # Create config directory if it doesn't exist
@@ -77,11 +80,8 @@ index = "index.html"
 EOF
 fi
 
-# Set environment variable for log level
-export RUST_LOG="garage=${LOG_LEVEL}"
-
 # Log the configuration
-bashio::log.info "Starting GarageHQ S3 Server..."
+bashio::log.info "GarageHQ configuration initialized"
 bashio::log.info "Storage path: ${STORAGE_PATH}"
 bashio::log.info "Metadata directory: ${METADATA_DIR}"
 bashio::log.info "Data directory: ${DATA_DIR}"
@@ -92,47 +92,60 @@ if bashio::var.true "${WEB_UI_ENABLED}"; then
     bashio::log.info "Web UI enabled on port 3902"
 fi
 
-# Start Garage server
-bashio::log.info "Starting Garage server..."
-garage -c "${CONFIG_FILE}" server &
-SERVER_PID=$!
-
-# Wait for server to start
-sleep 5
-
 # Initialize the layout if this is the first run
 if [ ! -f "${STORAGE_PATH}/.initialized" ]; then
     bashio::log.info "First run detected, initializing cluster layout..."
-
+    
+    # Start Garage server temporarily to initialize
+    garage -c "${CONFIG_FILE}" server &
+    SERVER_PID=$!
+    
+    # Wait for server to start
+    sleep 5
+    
     # Get node ID
     NODE_ID=$(garage -c "${CONFIG_FILE}" node id | awk '{print $1}')
-
+    
     # Assign layout
     bashio::log.info "Assigning layout with node ID: ${NODE_ID}"
     garage -c "${CONFIG_FILE}" layout assign -z dc1 -c 1G "${NODE_ID}"
-
+    
     # Apply layout
     bashio::log.info "Applying layout..."
     garage -c "${CONFIG_FILE}" layout apply --version 1
-
+    
     # Create marker file to indicate initialization is complete
     touch "${STORAGE_PATH}/.initialized"
-
+    
     bashio::log.info "Cluster layout initialized successfully"
+    
+    # Stop the temporary server
+    kill ${SERVER_PID}
+    wait ${SERVER_PID} 2>/dev/null || true
 fi
 
 # Check if access key is already created
 if [ ! -f "${STORAGE_PATH}/.key_created" ] && [ -n "${ACCESS_KEY}" ] && [ -n "${SECRET_KEY}" ]; then
     bashio::log.info "Creating access key..."
-
+    
+    # Start Garage server temporarily to create key
+    garage -c "${CONFIG_FILE}" server &
+    SERVER_PID=$!
+    
+    # Wait for server to start
+    sleep 5
+    
     # Create key with specified credentials
     echo "${SECRET_KEY}" | garage -c "${CONFIG_FILE}" key import "${ACCESS_KEY}"
-
+    
     # Create marker file to indicate key creation is complete
     touch "${STORAGE_PATH}/.key_created"
-
+    
     bashio::log.info "Access key created successfully"
+    
+    # Stop the temporary server
+    kill ${SERVER_PID}
+    wait ${SERVER_PID} 2>/dev/null || true
 fi
 
-# Keep the script running
-wait ${SERVER_PID}
+bashio::log.info "GarageHQ initialization complete"

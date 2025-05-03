@@ -1,0 +1,18 @@
+#!/usr/bin/with-contenv bashio
+# ==============================================================================
+# Start GarageHQ service
+# ==============================================================================
+
+# Get config values
+STORAGE_PATH=$(bashio::config 'storage_path')
+CONFIG_FILE="/etc/garage/garage.toml"
+
+# Set environment variable for log level
+export RUST_LOG="garage=$(bashio::config 'log_level')"
+
+# Log the configuration
+bashio::log.info "Starting GarageHQ S3 Server..."
+bashio::log.info "Using configuration file: ${CONFIG_FILE}"
+
+# Start Garage server
+exec garage -c "${CONFIG_FILE}" server
