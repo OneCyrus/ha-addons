@@ -5,7 +5,7 @@
 
 # Get config values
 STORAGE_PATH=$(bashio::config 'storage_path')
-CONFIG_FILE="/etc/garage/garage.toml"
+CONFIG_FILE="/etc/garage.toml"
 
 # Set environment variable for log level
 export RUST_LOG="garage=$(bashio::config 'log_level')"

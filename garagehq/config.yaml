@@ -1,5 +1,5 @@
 name: "GarageHQ S3 Server"
-version: "1.0.5"
+version: "1.0.6"
 slug: "garagehq"
 description: "S3-compatible storage server for Home Assistant"
 url: "https://github.com/home-assistant/addons/tree/master/garagehq"

@@ -20,11 +20,7 @@ mkdir -p "${STORAGE_PATH}/data"
 mkdir -p "${STORAGE_PATH}/snapshots"
 
 # Set up configuration file
-CONFIG_DIR="/etc/garage"
-CONFIG_FILE="${CONFIG_DIR}/garage.toml"
-
-# Create config directory if it doesn't exist
-mkdir -p "${CONFIG_DIR}"
+CONFIG_FILE="/etc/garage.toml"
 
 # Generate a random RPC secret if not provided
 if bashio::config.exists 'rpc_secret'; then
@@ -97,22 +93,22 @@ if [ ! -f "${STORAGE_PATH}/.initialized" ]; then
     bashio::log.info "First run detected, initializing cluster layout..."
     
     # Start Garage server temporarily to initialize
-    garage -c "${CONFIG_FILE}" server &
+    /usr/local/bin/garage -c "${CONFIG_FILE}" server &
     SERVER_PID=$!
     
     # Wait for server to start
     sleep 5
     
     # Get node ID
-    NODE_ID=$(garage -c "${CONFIG_FILE}" node id | awk '{print $1}')
+    NODE_ID=$(/usr/local/bin/garage -c "${CONFIG_FILE}" node id | awk '{print $1}')
     
     # Assign layout
     bashio::log.info "Assigning layout with node ID: ${NODE_ID}"
-    garage -c "${CONFIG_FILE}" layout assign -z dc1 -c 1G "${NODE_ID}"
+    /usr/local/bin/garage -c "${CONFIG_FILE}" layout assign -z dc1 -c 1G "${NODE_ID}"
     
     # Apply layout
     bashio::log.info "Applying layout..."
-    garage -c "${CONFIG_FILE}" layout apply --version 1
+    /usr/local/bin/garage -c "${CONFIG_FILE}" layout apply --version 1
     
     # Create marker file to indicate initialization is complete
     touch "${STORAGE_PATH}/.initialized"
@@ -129,14 +125,14 @@ if [ ! -f "${STORAGE_PATH}/.key_created" ] && [ -n "${ACCESS_KEY}" ] && [ -n "${
     bashio::log.info "Creating access key..."
     
     # Start Garage server temporarily to create key
-    garage -c "${CONFIG_FILE}" server &
+    /usr/local/bin/garage -c "${CONFIG_FILE}" server &
     SERVER_PID=$!
     
     # Wait for server to start
     sleep 5
     
     # Create key with specified credentials
-    echo "${SECRET_KEY}" | garage -c "${CONFIG_FILE}" key import "${ACCESS_KEY}"
+    echo "${SECRET_KEY}" | /usr/local/bin/garage -c "${CONFIG_FILE}" key import "${ACCESS_KEY}"
     
     # Create marker file to indicate key creation is complete
     touch "${STORAGE_PATH}/.key_created"
