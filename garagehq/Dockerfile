@@ -23,7 +23,7 @@ RUN echo "Building for architecture: ${BUILD_ARCH}" \
         DOWNLOAD_URL="https://garagehq.deuxfleurs.fr/_releases/v${GARAGE_VERSION}/x86_64-unknown-linux-musl/garage"; \
     fi \
     && echo "Downloading from: ${DOWNLOAD_URL}" \
-    && curl -L -s "${DOWNLOAD_URL}" -o /usr/local/bin/garage \
+    && curl ${DOWNLOAD_URL} -o /usr/local/bin/garage \
     && chmod +x /usr/local/bin/garage
 
 # Copy root filesystem
