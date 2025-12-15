@@ -36,4 +36,3 @@ schema:
   log_level: "list(error|warn|info|debug|trace)"
   server_domains: "str?"
   default_bucket: "str?"
-image: "ghcr.io/onecyrus/ha-addon-rustfs/{arch}"

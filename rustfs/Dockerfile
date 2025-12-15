@@ -6,7 +6,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Setup base system
 ARG BUILD_ARCH=amd64
-ENV RUSTFS_VERSION="0.3.0"
+ENV RUSTFS_VERSION="1.0.0-alpha.73"
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \

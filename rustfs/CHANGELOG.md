@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Initial release of RustFS S3 Server add-on
+- Using RustFS version 1.0.0-alpha.73 (latest release)
 - S3-compatible object storage server
 - Support for aarch64 (Raspberry Pi 4), amd64, and armv7 architectures
 - Web-based admin console
