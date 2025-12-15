@@ -1,0 +1,40 @@
+---
+configuration:
+  storage_path:
+    name: Storage Path
+    description: >-
+      Path where RustFS will store all S3 data. This should be within the
+      /share directory for persistence across restarts.
+  access_key:
+    name: Access Key
+    description: >-
+      S3 access key for authentication. Leave empty to auto-generate a random
+      key. The generated key will be shown in the logs.
+  secret_key:
+    name: Secret Key
+    description: >-
+      S3 secret key for authentication. Leave empty to auto-generate a random
+      key. The generated key will be shown in the logs.
+  console_enabled:
+    name: Enable Web Console
+    description: >-
+      Enable the web-based admin console for managing buckets and objects.
+      Accessible at port 9001 when enabled.
+  log_level:
+    name: Log Level
+    description: >-
+      Set the logging verbosity. Use 'info' for normal operation, 'debug' or
+      'trace' for troubleshooting.
+  server_domains:
+    name: Server Domains
+    description: >-
+      Comma-separated list of server domains for virtual-host-style requests.
+      Leave empty for most use cases.
+  default_bucket:
+    name: Default Bucket
+    description: >-
+      Name of the default bucket to create automatically on startup. Leave
+      empty to disable automatic bucket creation.
+network:
+  9000/tcp: S3 API endpoint for all S3-compatible operations
+  9001/tcp: Web console for browser-based management (when enabled)

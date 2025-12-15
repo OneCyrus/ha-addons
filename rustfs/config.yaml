@@ -1,0 +1,39 @@
+---
+name: "RustFS S3 Server"
+version: "1.0.0"
+slug: "rustfs"
+description: "High-performance S3-compatible object storage server written in Rust"
+url: "https://github.com/OneCyrus/ha-addons/tree/main/rustfs"
+arch:
+  - aarch64
+  - amd64
+  - armv7
+startup: services
+boot: auto
+init: false
+map:
+  - share:rw
+  - addon_config:rw
+ports:
+  9000/tcp: 9000
+  9001/tcp: 9001
+ports_description:
+  9000/tcp: "S3 API endpoint"
+  9001/tcp: "Web console (admin UI)"
+options:
+  storage_path: "/share/rustfs"
+  access_key: ""
+  secret_key: ""
+  console_enabled: true
+  log_level: "info"
+  server_domains: ""
+  default_bucket: "homeassistant"
+schema:
+  storage_path: "str"
+  access_key: "str?"
+  secret_key: "password?"
+  console_enabled: "bool"
+  log_level: "list(error|warn|info|debug|trace)"
+  server_domains: "str?"
+  default_bucket: "str?"
+image: "ghcr.io/onecyrus/ha-addon-rustfs/{arch}"

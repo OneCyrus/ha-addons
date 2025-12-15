@@ -1,0 +1,54 @@
+#!/usr/bin/with-contenv bashio
+# ==============================================================================
+# Home Assistant Add-on: RustFS S3 Server
+# Runs the RustFS S3 Server
+# ==============================================================================
+
+# Source configuration
+source /etc/rustfs.conf
+
+bashio::log.info "Starting RustFS S3 Server..."
+
+# Build command arguments
+ARGS=()
+ARGS+=("--address" ":9000")
+ARGS+=("--access-key" "${ACCESS_KEY}")
+ARGS+=("--secret-key" "${SECRET_KEY}")
+
+# Enable console if configured
+if bashio::var.true "${CONSOLE_ENABLED}"; then
+    ARGS+=("--console-enable")
+    ARGS+=("--console-address" ":9001")
+fi
+
+# Add server domains if configured
+if bashio::var.has_value "${SERVER_DOMAINS}"; then
+    ARGS+=("--server-domains" "${SERVER_DOMAINS}")
+fi
+
+# Set log level
+case "${LOG_LEVEL}" in
+    error)
+        export RUST_LOG=error
+        ;;
+    warn)
+        export RUST_LOG=warn
+        ;;
+    info)
+        export RUST_LOG=info
+        ;;
+    debug)
+        export RUST_LOG=debug
+        ;;
+    trace)
+        export RUST_LOG=trace
+        ;;
+esac
+
+# Storage path must be the last argument
+ARGS+=("${STORAGE_PATH}")
+
+bashio::log.info "Starting RustFS with storage path: ${STORAGE_PATH}"
+
+# Run as rustfs user (UID 10001)
+exec s6-setuidgid 10001 /usr/local/bin/rustfs "${ARGS[@]}"

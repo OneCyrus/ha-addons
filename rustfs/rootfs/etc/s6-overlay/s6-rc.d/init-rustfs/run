@@ -1,0 +1,71 @@
+#!/usr/bin/with-contenv bashio
+# ==============================================================================
+# Home Assistant Add-on: RustFS S3 Server
+# Configures RustFS before starting
+# ==============================================================================
+
+bashio::log.info "Initializing RustFS S3 Server..."
+
+# Get configuration values
+STORAGE_PATH=$(bashio::config 'storage_path')
+ACCESS_KEY=$(bashio::config 'access_key')
+SECRET_KEY=$(bashio::config 'secret_key')
+CONSOLE_ENABLED=$(bashio::config 'console_enabled')
+LOG_LEVEL=$(bashio::config 'log_level')
+SERVER_DOMAINS=$(bashio::config 'server_domains')
+DEFAULT_BUCKET=$(bashio::config 'default_bucket')
+
+# Generate random credentials if not provided
+if bashio::var.is_empty "${ACCESS_KEY}"; then
+    ACCESS_KEY=$(openssl rand -hex 16)
+    bashio::log.warning "No access_key configured, generated random key: ${ACCESS_KEY}"
+    bashio::log.warning "Please save this key and configure it in the addon settings!"
+fi
+
+if bashio::var.is_empty "${SECRET_KEY}"; then
+    SECRET_KEY=$(openssl rand -hex 32)
+    bashio::log.warning "No secret_key configured, generated random key: ${SECRET_KEY}"
+    bashio::log.warning "Please save this key and configure it in the addon settings!"
+fi
+
+# Create storage directory
+bashio::log.info "Creating storage directory: ${STORAGE_PATH}"
+mkdir -p "${STORAGE_PATH}"
+
+# Set proper ownership for RustFS user (UID 10001)
+chown -R 10001:10001 "${STORAGE_PATH}"
+
+# Create default bucket directory if specified
+if bashio::var.has_value "${DEFAULT_BUCKET}"; then
+    BUCKET_PATH="${STORAGE_PATH}/${DEFAULT_BUCKET}"
+    bashio::log.info "Creating default bucket: ${DEFAULT_BUCKET}"
+    mkdir -p "${BUCKET_PATH}"
+    chown -R 10001:10001 "${BUCKET_PATH}"
+fi
+
+# Create configuration file for the service
+bashio::log.info "Generating RustFS configuration..."
+cat > /etc/rustfs.conf << EOF
+STORAGE_PATH=${STORAGE_PATH}
+ACCESS_KEY=${ACCESS_KEY}
+SECRET_KEY=${SECRET_KEY}
+CONSOLE_ENABLED=${CONSOLE_ENABLED}
+LOG_LEVEL=${LOG_LEVEL}
+SERVER_DOMAINS=${SERVER_DOMAINS}
+EOF
+
+# Set proper permissions on config file
+chmod 600 /etc/rustfs.conf
+
+bashio::log.info "RustFS initialization complete!"
+bashio::log.info "=========================================="
+bashio::log.info "S3 API Endpoint: http://homeassistant.local:9000"
+if bashio::var.true "${CONSOLE_ENABLED}"; then
+    bashio::log.info "Web Console: http://homeassistant.local:9001"
+fi
+bashio::log.info "Access Key: ${ACCESS_KEY}"
+bashio::log.info "Secret Key: ${SECRET_KEY}"
+if bashio::var.has_value "${DEFAULT_BUCKET}"; then
+    bashio::log.info "Default Bucket: ${DEFAULT_BUCKET}"
+fi
+bashio::log.info "=========================================="
